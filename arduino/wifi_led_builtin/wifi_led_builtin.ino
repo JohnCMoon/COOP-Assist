@@ -6,6 +6,9 @@ const char* password = "12341234";
 int ledPin = 2;
 WiFiServer server(80);
 
+// Status of the LED
+int value = HIGH;
+  
 void setup() {
   Serial.begin(115200);
   delay(10);
@@ -60,7 +63,7 @@ void loop() {
 
   // Match the request
 
-  int value = LOW;
+
   if (request.indexOf("/LED=ON") != -1)  {
     digitalWrite(ledPin, LOW);
     value = HIGH;
@@ -68,6 +71,16 @@ void loop() {
   if (request.indexOf("/LED=OFF") != -1)  {
     digitalWrite(ledPin, HIGH);
     value = LOW;
+  }
+  if (request.indexOf("/LED=SWT") != -1)  {
+    if(value == LOW) {
+      digitalWrite(ledPin, LOW);
+      value = HIGH;
+    }
+    else {
+      digitalWrite(ledPin, HIGH);
+      value = LOW;     
+    }
   }
 
   // Set ledPin according to the request
@@ -80,15 +93,16 @@ void loop() {
   client.println("<!DOCTYPE HTML>");
   client.println("<HEAD>");
   client.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=2\">");
+  client.println("<meta http-equiv=\"refresh\" content=\"5; URL=/LED\">");
   client.println("</HEAD");
   client.println("<html>");
 
   client.print("Led pin is now: ");
 
   if (value == HIGH) {
-    client.print("On");
+    client.print("<font color=\"green\"<b>On</b></font>");
   } else {
-    client.print("Off");
+    client.print("<font color=\"red\"<b>Off</b></font>");
   }
   client.println("<br><br>");
   client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
