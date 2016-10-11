@@ -91,12 +91,13 @@ void loop() {
   client.println("Content-Type: text/html");
   client.println(""); //  do not forget this one
   client.println("<!DOCTYPE HTML>");
-  client.println("<HEAD>");
+  client.println("<html>");
+  client.println("<head>");
   client.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=2\">");
   client.println("<meta http-equiv=\"refresh\" content=\"5; URL=/LED\">");
-  client.println("</HEAD");
-  client.println("<html>");
-
+  client.println("</head");
+  
+  client.println("<body>");
   client.print("Led pin is now: ");
 
   if (value == HIGH) {
@@ -107,6 +108,7 @@ void loop() {
   client.println("<br><br>");
   client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
   client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");
+  client.println("</body>");
   client.println("</html>");
 
   delay(1);
