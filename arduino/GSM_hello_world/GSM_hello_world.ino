@@ -1,6 +1,7 @@
 void setup() {
   Serial.begin(115200);
   Serial3.begin(19200);
+  toggle_power();
   //send_test_SMS();
 }
 
@@ -15,16 +16,48 @@ void loop() {
 }
 
 void send_test_SMS() {
-    Serial3.print("AT+CMGF=1\r");
+    Serial3.print(F("AT+CMGF=1\r"));
     delay(100);
-    Serial3.println("AT+CMGS=\"+1555#######\"");
+    Serial3.println(F("AT+CMGS=\"+1555#######\""));
     delay(100);
-    Serial3.println("Hello, World!");
+    Serial3.println(F("Hello, World!"));
     delay(100);
     Serial3.println((char)26);//the ASCII code of the ctrl+z is 26
     delay(100);
     Serial3.println();
-    Serial.println("Test SMS sent.");
+    Serial.println(F("Test SMS sent."));
+}
+
+void turn_on_cell_module() {
+  while (cell_is_off()) 
+    Serial.println(F("Trying again."));
+}
+
+boolean cell_is_off() {
+  toggle_power(); 
+  while (Serial3.available())
+    Serial3.read();
+  delay(50); 
+  Serial3.print(F("AT+GMI\r")); 
+  delay(125); 
+  if (Serial3.available()) {
+    while (Serial3.available())
+      Serial3.read();
+    delay(200);
+    return false; 
+  }
+  return true;
+}
+
+void toggle_power() {
+  Serial.println(F("Toggling cell module power."));
+  pinMode(9, OUTPUT); 
+  digitalWrite(9, LOW);
+  delay(1000);
+  digitalWrite(9, HIGH);
+  delay(2000);
+  digitalWrite(9, LOW);
+  delay(3000);
 }
 
 /* Available AT commands on this module
